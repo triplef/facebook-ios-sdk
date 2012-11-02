@@ -30,6 +30,7 @@ static NSArray* _cdnHosts;
 @property (nonatomic, retain) NSURLConnection *connection;
 @property (nonatomic, retain) NSMutableData *data;
 @property (nonatomic, copy) FBURLConnectionHandler handler;
+@property (nonatomic, copy) FBURLProgressHandler progressHandler;
 @property (nonatomic, retain) NSURLResponse *response;
 @property (nonatomic) unsigned long requestStartTime;
 @property (nonatomic, readonly) NSUInteger loggerSerialNumber;
@@ -49,6 +50,7 @@ static NSArray* _cdnHosts;
 @synthesize connection = _connection;
 @synthesize data = _data;
 @synthesize handler = _handler;
+@synthesize progressHandler = _progressHandler;
 @synthesize loggerSerialNumber = _loggerSerialNumber;
 @synthesize requestStartTime = _requestStartTime;
 @synthesize response = _response;
@@ -72,12 +74,14 @@ static NSArray* _cdnHosts;
     NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:url] autorelease];
     return [self initWithRequest:request
            skipRoundTripIfCached:YES
-               completionHandler:handler];
+               completionHandler:handler
+                 progressHandler:nil];
 }
 
 - (FBURLConnection *)initWithRequest:(NSURLRequest *)request
                skipRoundTripIfCached:(BOOL)skipRoundtripIfCached
                    completionHandler:(FBURLConnectionHandler)handler
+                     progressHandler:(FBURLProgressHandler)progressHandler
 {
     if (self = [super init]) {
         self.skipRoundtripIfCached = skipRoundtripIfCached;
@@ -111,6 +115,7 @@ static NSArray* _cdnHosts;
                 [url absoluteString]];
             
             self.handler = handler;
+            self.progressHandler = progressHandler;
         }
 
         // always attempt to autoPublish.  this function internally
@@ -169,6 +174,7 @@ static NSArray* _cdnHosts;
     [_connection release];
     [_data release];
     [_handler release];
+    [_progressHandler release];
     [super dealloc];
 }
 
@@ -209,6 +215,14 @@ didReceiveResponse:(NSURLResponse *)response
     didReceiveData:(NSData *)data
 {
     [self.data appendData:data];
+}
+
+- (void)connection:(NSURLConnection *)connection didSendBodyData:(NSInteger)bytesWritten totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
+{
+    if (self.progressHandler) {
+        float progress = (float)totalBytesWritten / (float)totalBytesExpectedToWrite;
+        self.progressHandler(self, progress);
+    }
 }
 
 - (void)connection:(NSURLConnection *)connection

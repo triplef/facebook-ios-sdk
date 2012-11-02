@@ -279,6 +279,8 @@ typedef NSUInteger FBRequestState __attribute__((deprecated));
 */
 - (FBRequestConnection*)startWithCompletionHandler:(FBRequestHandler)handler;
 
+- (FBRequestConnection*)startWithCompletionHandler:(FBRequestHandler)handler progressHandler:(FBProgressHandler)progressHandler;
+
 /*!
  @methodgroup FBRequestConnection start methods
 

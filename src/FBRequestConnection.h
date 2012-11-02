@@ -57,6 +57,8 @@ typedef void (^FBRequestHandler)(FBRequestConnection *connection,
                                  id result,
                                  NSError *error);
 
+typedef void (^FBProgressHandler)(FBRequestConnection *connection, float progress);
+
 /*!
  @class FBRequestConnection
 
@@ -179,6 +181,11 @@ typedef void (^FBRequestHandler)(FBRequestConnection *connection,
 - (void)addRequest:(FBRequest*)request
  completionHandler:(FBRequestHandler)handler
     batchEntryName:(NSString*)name;
+
+- (void)addRequest:(FBRequest *)request
+ completionHandler:(FBRequestHandler)handler
+   progressHandler:(FBProgressHandler)progressHandler
+    batchEntryName:(NSString *)name;
 
 /*!
  @methodgroup Instance methods
@@ -385,5 +392,11 @@ typedef void (^FBRequestHandler)(FBRequestConnection *connection,
                                 parameters:(NSDictionary*)parameters
                                 HTTPMethod:(NSString*)HTTPMethod
                          completionHandler:(FBRequestHandler)handler;
+
++ (FBRequestConnection*)startWithGraphPath:(NSString*)graphPath
+                                parameters:(NSDictionary*)parameters
+                                HTTPMethod:(NSString*)HTTPMethod
+                         completionHandler:(FBRequestHandler)handler
+                           progressHandler:(FBProgressHandler)progressHandler;
 
 @end

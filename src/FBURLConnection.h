@@ -21,6 +21,7 @@ typedef void (^FBURLConnectionHandler)(FBURLConnection *connection,
                                        NSError *error,
                                        NSURLResponse *response,
                                        NSData *responseData);
+typedef void (^FBURLProgressHandler)(FBURLConnection *connection, float progress);
 
 @interface FBURLConnection : NSObject
 
@@ -29,7 +30,8 @@ typedef void (^FBURLConnectionHandler)(FBURLConnection *connection,
 
 - (FBURLConnection *)initWithRequest:(NSURLRequest *)request
                skipRoundTripIfCached:(BOOL)skipRoundtripIfCached
-                   completionHandler:(FBURLConnectionHandler)handler;
+                   completionHandler:(FBURLConnectionHandler)handler
+                     progressHandler:(FBURLProgressHandler)progressHandler;
 
 - (void)cancel;
 

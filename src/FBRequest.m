@@ -137,8 +137,13 @@ static NSString *const kPostHTTPMethod = @"POST";
 
 - (FBRequestConnection*)startWithCompletionHandler:(FBRequestHandler)handler
 {
+    return [self startWithCompletionHandler:handler progressHandler:nil];
+}
+
+- (FBRequestConnection*)startWithCompletionHandler:(FBRequestHandler)handler progressHandler:(FBProgressHandler)progressHandler
+{
     FBRequestConnection *connection = [[[FBRequestConnection alloc] init] autorelease];
-    [connection addRequest:self completionHandler:handler];
+    [connection addRequest:self completionHandler:handler progressHandler:progressHandler batchEntryName:nil];
     [connection start];
     return connection;
 }
