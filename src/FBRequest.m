@@ -15,6 +15,7 @@
  */
 
 #import "Facebook.h"
+#import "FBLogger.h"
 #import "FBUtility.h"
 #import "FBSession+Internal.h"
 #import "FBSDKVersion.h"
@@ -404,7 +405,7 @@ static NSString *const kPostHTTPMethod = @"POST";
         if ([value isKindOfClass:[UIImage class]]
             || [value isKindOfClass:[NSData class]]) {
             if ([httpMethod isEqualToString:kGetHTTPMethod]) {
-                NSLog(@"can not use GET to upload a file");
+                [FBLogger singleShotLogEntry:FBLoggingBehaviorDeveloperErrors logEntry:@"can not use GET to upload a file"];
             }
             continue;
         }
